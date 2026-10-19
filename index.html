@@ -9,37 +9,38 @@
   <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="style.css" />
   <style>
-    /* Critical override so Tailwind CDN never strips Minecraft Touch Button boxes */
+    /* Ultra-transparent Minecraft Beveled Touch Buttons (Tanks remain 100% visible behind them) */
     button.mc-pad-btn {
-      background-color: rgba(226, 232, 240, 0.72) !important;
-      backdrop-filter: blur(3px) !important;
-      -webkit-backdrop-filter: blur(3px) !important;
-      border-top: 3px solid rgba(255, 255, 255, 0.95) !important;
-      border-left: 3px solid rgba(255, 255, 255, 0.95) !important;
-      border-right: 3px solid rgba(30, 41, 59, 0.8) !important;
-      border-bottom: 3px solid rgba(15, 23, 42, 0.9) !important;
-      border-radius: 6px !important;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.45), inset 0 0 0 1px rgba(255, 255, 255, 0.4) !important;
-      color: #0f172a !important;
+      background-color: rgba(255, 255, 255, 0.20) !important;
+      backdrop-filter: blur(1px) !important;
+      -webkit-backdrop-filter: blur(1px) !important;
+      border-top: 2.5px solid rgba(255, 255, 255, 0.65) !important;
+      border-left: 2.5px solid rgba(255, 255, 255, 0.65) !important;
+      border-right: 2.5px solid rgba(15, 23, 42, 0.50) !important;
+      border-bottom: 2.5px solid rgba(15, 23, 42, 0.60) !important;
+      border-radius: 5px !important;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25), inset 0 0 0 1px rgba(255, 255, 255, 0.2) !important;
+      color: rgba(255, 255, 255, 0.92) !important;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.85) !important;
     }
     button.mc-pad-btn:active {
-      background-color: rgba(148, 163, 184, 0.88) !important;
-      border-top: 3px solid rgba(15, 23, 42, 0.85) !important;
-      border-left: 3px solid rgba(15, 23, 42, 0.85) !important;
-      border-right: 3px solid rgba(255, 255, 255, 0.9) !important;
-      border-bottom: 3px solid rgba(255, 255, 255, 0.9) !important;
-      transform: translateY(2px) !important;
+      background-color: rgba(255, 255, 255, 0.45) !important;
+      border-top: 2.5px solid rgba(15, 23, 42, 0.60) !important;
+      border-left: 2.5px solid rgba(15, 23, 42, 0.60) !important;
+      border-right: 2.5px solid rgba(255, 255, 255, 0.65) !important;
+      border-bottom: 2.5px solid rgba(255, 255, 255, 0.65) !important;
+      transform: translateY(1.5px) !important;
     }
     button.mc-pad-btn.mc-pad-btn-fire {
-      background-color: rgba(239, 68, 68, 0.78) !important;
-      border-top: 3px solid rgba(254, 226, 226, 0.95) !important;
-      border-left: 3px solid rgba(254, 226, 226, 0.95) !important;
-      border-right: 3px solid rgba(127, 29, 29, 0.9) !important;
-      border-bottom: 3px solid rgba(69, 10, 10, 0.95) !important;
+      background-color: rgba(239, 68, 68, 0.32) !important;
+      border-top: 2.5px solid rgba(254, 202, 202, 0.75) !important;
+      border-left: 2.5px solid rgba(254, 202, 202, 0.75) !important;
+      border-right: 2.5px solid rgba(127, 29, 29, 0.65) !important;
+      border-bottom: 2.5px solid rgba(69, 10, 10, 0.75) !important;
       color: #ffffff !important;
     }
     button.mc-pad-btn.mc-pad-btn-fire:active {
-      background-color: rgba(185, 28, 28, 0.92) !important;
+      background-color: rgba(220, 38, 38, 0.60) !important;
     }
   </style>
 </head>
@@ -386,7 +387,7 @@
             <div>"Q" &amp; "W": <span class="text-[#2f3b1c]">CHANGE WEAPON</span></div>
             <div>SPACE: <span class="text-[#2f3b1c]">FIRE</span></div>
             <div class="text-[10px] text-emerald-800 font-extrabold pt-0.5">
-              📱 MOBILE: D-PAD &amp; TOUCH BUTTONS!
+              📱 MOBILE: SEE-THROUGH D-PAD &amp; TOUCH BUTTONS!
             </div>
           </div>
         </div>
@@ -625,55 +626,55 @@
       </div>
 
       <!-- =============================================================== -->
-      <!-- MINECRAFT-STYLE TOUCH CONTROLS (RAISED ABOVE NETLIFY BADGE ZONE) -->
+      <!-- COMPACT SEE-THROUGH TOUCH CONTROLS TUCKED IN BOTTOM CORNERS     -->
       <!-- =============================================================== -->
-      <div id="mobileTouchControls" class="absolute inset-x-0 bottom-0 pointer-events-none z-20 flex justify-between items-end px-3 sm:px-5 pb-12 sm:pb-5 select-none">
+      <div id="mobileTouchControls" class="absolute inset-x-0 bottom-0 pointer-events-none z-20 flex justify-between items-end px-2 sm:px-4 pb-2 sm:pb-3 select-none">
         
-        <!-- LEFT: MINECRAFT CROSS D-PAD (3x3 Grid) -->
+        <!-- LEFT: COMPACT SEE-THROUGH MINECRAFT D-PAD (3x3 Grid) -->
         <div class="pointer-events-auto flex flex-col items-center">
-          <div class="grid grid-cols-3 gap-1">
+          <div class="grid grid-cols-3 gap-0.5">
             <div></div>
-            <button id="mcBtnAngleUp" type="button" class="mc-pad-btn w-11 h-11" title="Cannon Up">
-              <svg viewBox="0 0 24 24" class="w-6 h-6 fill-[#1e293b] drop-shadow-[0_1px_0_rgba(255,255,255,0.8)]"><polygon points="12,4 4,18 20,18" /></svg>
+            <button id="mcBtnAngleUp" type="button" class="mc-pad-btn w-9 h-9 sm:w-10 sm:h-10" title="Cannon Up">
+              <svg viewBox="0 0 24 24" class="w-4 h-4 sm:w-5 sm:h-5 fill-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]"><polygon points="12,4 4,18 20,18" /></svg>
             </button>
             <div></div>
 
-            <button id="mcBtnLeft" type="button" class="mc-pad-btn w-11 h-11" title="Move Left">
-              <svg viewBox="0 0 24 24" class="w-6 h-6 fill-[#1e293b] drop-shadow-[0_1px_0_rgba(255,255,255,0.8)]"><polygon points="4,12 18,4 18,20" /></svg>
+            <button id="mcBtnLeft" type="button" class="mc-pad-btn w-9 h-9 sm:w-10 sm:h-10" title="Move Left">
+              <svg viewBox="0 0 24 24" class="w-4 h-4 sm:w-5 sm:h-5 fill-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]"><polygon points="4,12 18,4 18,20" /></svg>
             </button>
-            <button id="mcBtnCenter" type="button" class="mc-pad-btn w-11 h-11" title="Shield Toggle">
-              <div class="w-4 h-4 border-[2.5px] border-[#1e293b] bg-cyan-400/50 rotate-45 shadow-xs"></div>
+            <button id="mcBtnCenter" type="button" class="mc-pad-btn w-9 h-9 sm:w-10 sm:h-10" title="Shield Toggle">
+              <div class="w-3 h-3 border-2 border-white bg-cyan-400/40 rotate-45 shadow-xs"></div>
             </button>
-            <button id="mcBtnRight" type="button" class="mc-pad-btn w-11 h-11" title="Move Right">
-              <svg viewBox="0 0 24 24" class="w-6 h-6 fill-[#1e293b] drop-shadow-[0_1px_0_rgba(255,255,255,0.8)]"><polygon points="20,12 6,4 6,20" /></svg>
+            <button id="mcBtnRight" type="button" class="mc-pad-btn w-9 h-9 sm:w-10 sm:h-10" title="Move Right">
+              <svg viewBox="0 0 24 24" class="w-4 h-4 sm:w-5 sm:h-5 fill-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]"><polygon points="20,12 6,4 6,20" /></svg>
             </button>
 
             <div></div>
-            <button id="mcBtnAngleDown" type="button" class="mc-pad-btn w-11 h-11" title="Cannon Down">
-              <svg viewBox="0 0 24 24" class="w-6 h-6 fill-[#1e293b] drop-shadow-[0_1px_0_rgba(255,255,255,0.8)]"><polygon points="12,20 4,6 20,6" /></svg>
+            <button id="mcBtnAngleDown" type="button" class="mc-pad-btn w-9 h-9 sm:w-10 sm:h-10" title="Cannon Down">
+              <svg viewBox="0 0 24 24" class="w-4 h-4 sm:w-5 sm:h-5 fill-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]"><polygon points="12,20 4,6 20,6" /></svg>
             </button>
             <div></div>
           </div>
         </div>
 
-        <!-- RIGHT: MINECRAFT ACTION CLUSTER (Raised clear of bottom-right Netlify badge) -->
-        <div class="pointer-events-auto flex items-end gap-2.5 mb-3 sm:mb-0">
-          <div class="flex flex-col gap-1.5 items-end">
-            <button id="mcBtnWeapon" type="button" class="mc-pad-btn px-2.5 h-10 w-auto text-[11px] font-black flex items-center gap-1" title="Cycle Weapon">
-              <svg viewBox="0 0 20 20" class="w-4 h-4 fill-[#0f172a]"><polygon points="5,3 16,10 5,17" /></svg>
+        <!-- RIGHT: COMPACT SEE-THROUGH ACTION CLUSTER -->
+        <div class="pointer-events-auto flex items-end gap-1.5">
+          <div class="flex flex-col gap-1 items-end">
+            <button id="mcBtnWeapon" type="button" class="mc-pad-btn px-2 h-8 sm:h-9 w-auto text-[10px] font-black flex items-center gap-1" title="Cycle Weapon">
+              <svg viewBox="0 0 20 20" class="w-3 h-3 fill-white drop-shadow"><polygon points="5,3 16,10 5,17" /></svg>
               <span>WEAPON</span>
             </button>
-            <div class="flex items-center gap-1.5">
-              <button id="mcBtnPowerDown" type="button" class="mc-pad-btn w-11 h-11 text-xl font-black leading-none" title="Power Down">−</button>
-              <button id="mcBtnPowerUp" type="button" class="mc-pad-btn w-11 h-11 text-xl font-black leading-none" title="Power Up">+</button>
+            <div class="flex items-center gap-1">
+              <button id="mcBtnPowerDown" type="button" class="mc-pad-btn w-9 h-9 sm:w-10 sm:h-10 text-lg font-black leading-none" title="Power Down">−</button>
+              <button id="mcBtnPowerUp" type="button" class="mc-pad-btn w-9 h-9 sm:w-10 sm:h-10 text-lg font-black leading-none" title="Power Up">+</button>
             </div>
           </div>
 
-          <button id="mcBtnFire" type="button" class="mc-pad-btn mc-pad-btn-fire w-16 h-16 flex flex-col items-center justify-center gap-0.5" title="Fire Cannon!">
-            <div class="w-8 h-8 rounded border-2 border-white/90 bg-red-700 flex items-center justify-center shadow">
-              <svg viewBox="0 0 24 24" class="w-5 h-5 fill-white"><circle cx="12" cy="12" r="5" /><line x1="12" y1="2" x2="12" y2="22" stroke="white" stroke-width="2.5" /><line x1="2" y1="12" x2="22" y2="12" stroke="white" stroke-width="2.5" /></svg>
+          <button id="mcBtnFire" type="button" class="mc-pad-btn mc-pad-btn-fire w-13 h-13 sm:w-14 sm:h-14 flex flex-col items-center justify-center gap-0.5 px-2.5 py-1.5" title="Fire Cannon!">
+            <div class="w-6 h-6 rounded border border-white/80 bg-red-600/40 flex items-center justify-center">
+              <svg viewBox="0 0 24 24" class="w-4 h-4 fill-white"><circle cx="12" cy="12" r="4" /><line x1="12" y1="2" x2="12" y2="22" stroke="white" stroke-width="2" /><line x1="2" y1="12" x2="22" y2="12" stroke="white" stroke-width="2" /></svg>
             </div>
-            <span class="text-[10px] font-black tracking-wider text-white drop-shadow leading-none">FIRE</span>
+            <span class="text-[9px] font-black tracking-wider text-white leading-none">FIRE</span>
           </button>
         </div>
 

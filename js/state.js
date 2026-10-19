@@ -83,7 +83,7 @@ function createPlayers(preserveScores) {
   });
 }
 
-// Procedural Heightmap with Lower Ground Baseline (70-75% Sky Area)
+// Procedural Heightmap with Balanced Baseline (Tanks sit above corner D-pad buttons)
 function generateBattlefield() {
   terrain = new Float32Array(W + 1);
 
@@ -92,67 +92,62 @@ function generateBattlefield() {
     ? allThemes[Math.floor(Math.random() * allThemes.length)]
     : selectedTerrainType;
 
-  // Background mountains positioned nicely behind lowered terrain
   if (activeTerrainTheme === "peaks" || activeTerrainTheme === "cliffs") {
     backgroundMountains = [
-      { peakX: W * 0.12, peakY: H * 0.35, baseLeft: -W * 0.08, baseRight: W * 0.38 },
-      { peakX: W * 0.44, peakY: H * 0.30, baseLeft: W * 0.22, baseRight: W * 0.74 },
-      { peakX: W * 0.84, peakY: H * 0.36, baseLeft: W * 0.60, baseRight: W * 1.08 }
+      { peakX: W * 0.12, peakY: H * 0.32, baseLeft: -W * 0.08, baseRight: W * 0.38 },
+      { peakX: W * 0.44, peakY: H * 0.28, baseLeft: W * 0.22, baseRight: W * 0.74 },
+      { peakX: W * 0.84, peakY: H * 0.34, baseLeft: W * 0.60, baseRight: W * 1.08 }
     ];
   } else if (activeTerrainTheme === "plains" || activeTerrainTheme === "dunes") {
     backgroundMountains = [
-      { peakX: W * 0.18, peakY: H * 0.58, baseLeft: -W * 0.05, baseRight: W * 0.42 },
-      { peakX: W * 0.52, peakY: H * 0.54, baseLeft: W * 0.30, baseRight: W * 0.78 },
-      { peakX: W * 0.88, peakY: H * 0.58, baseLeft: W * 0.68, baseRight: W * 1.08 }
+      { peakX: W * 0.18, peakY: H * 0.52, baseLeft: -W * 0.05, baseRight: W * 0.42 },
+      { peakX: W * 0.52, peakY: H * 0.48, baseLeft: W * 0.30, baseRight: W * 0.78 },
+      { peakX: W * 0.88, peakY: H * 0.52, baseLeft: W * 0.68, baseRight: W * 1.08 }
     ];
   } else {
     backgroundMountains = [
-      { peakX: W * 0.145, peakY: H * 0.46, baseLeft: -W * 0.04, baseRight: W * 0.36 },
-      { peakX: W * 0.495, peakY: H * 0.48, baseLeft: W * 0.28, baseRight: W * 0.72 },
-      { peakX: W * 0.875, peakY: H * 0.48, baseLeft: W * 0.66, baseRight: W * 1.06 }
+      { peakX: W * 0.145, peakY: H * 0.42, baseLeft: -W * 0.04, baseRight: W * 0.36 },
+      { peakX: W * 0.495, peakY: H * 0.44, baseLeft: W * 0.28, baseRight: W * 0.72 },
+      { peakX: W * 0.875, peakY: H * 0.44, baseLeft: W * 0.66, baseRight: W * 1.06 }
     ];
   }
 
   const seed = Math.random() * Math.PI * 2;
 
-  // Generate 1D Surface Heightmap
+  // Generate 1D Surface Heightmap (Centered around ~70% depth so tanks sit above bottom corner buttons)
   for (let x = 0; x <= W; x++) {
     const nx = x / W;
-    let y = H * 0.80;
+    let y = H * 0.70;
 
     switch (activeTerrainTheme) {
-      // 1. HIGH PEAKS: Steep jagged summits with lower base
       case "peaks": {
-        const base = H * 0.78;
-        const peak1 = Math.abs(Math.sin(nx * Math.PI * 2.2 + seed)) * (H * 0.16);
+        const base = H * 0.70;
+        const peak1 = Math.abs(Math.sin(nx * Math.PI * 2.2 + seed)) * (H * 0.17);
         const peak2 = Math.cos(nx * Math.PI * 4.4 - seed * 0.7) * (H * 0.05);
         const ridge = Math.abs(Math.sin(nx * Math.PI * 7.5 + seed)) * (H * 0.025);
         y = base - peak1 - peak2 - ridge;
         break;
       }
 
-      // 2. ROLLING HILLS: Gentle natural curves occupying bottom ~20%
       case "hills": {
-        const base = H * 0.80;
-        const h1 = Math.sin(nx * Math.PI * 2.5 + seed) * (H * 0.07);
+        const base = H * 0.71;
+        const h1 = Math.sin(nx * Math.PI * 2.5 + seed) * (H * 0.075);
         const h2 = Math.cos(nx * Math.PI * 4.2 - seed * 0.6) * (H * 0.03);
         y = base - h1 - h2;
         break;
       }
 
-      // 3. DEEP CANYON: High side mesas with sunken gorge in center
       case "canyon": {
         const distFromCenter = Math.abs(nx - 0.5);
         const gorgeDip = Math.exp(-Math.pow(distFromCenter / 0.18, 2)) * (H * 0.13);
         const plateauBumps = Math.sin(nx * Math.PI * 6.0 + seed) * (H * 0.02);
-        y = (H * 0.73) + gorgeDip - plateauBumps;
+        y = (H * 0.64) + gorgeDip - plateauBumps;
         break;
       }
 
-      // 4. JAGGED CLIFFS: Rugged stepped ledges and crags
       case "cliffs": {
-        const base = H * 0.78;
-        const harmonic1 = Math.sin(nx * Math.PI * 3.2 + seed) * (H * 0.08);
+        const base = H * 0.69;
+        const harmonic1 = Math.sin(nx * Math.PI * 3.2 + seed) * (H * 0.085);
         const harmonic2 = Math.sin(nx * Math.PI * 7.8 - seed * 1.2) * (H * 0.04);
         const harmonic3 = Math.cos(nx * Math.PI * 14.5 + seed) * (H * 0.015);
         const stepped = Math.floor(harmonic1 / 14) * 14;
@@ -160,18 +155,16 @@ function generateBattlefield() {
         break;
       }
 
-      // 5. FLAT PLAINS: Open battlefield with minimal bumps
       case "plains": {
-        const base = H * 0.84;
+        const base = H * 0.73;
         const bump1 = Math.sin(nx * Math.PI * 1.8 + seed) * (H * 0.02);
         const bump2 = Math.cos(nx * Math.PI * 3.6 - seed) * (H * 0.01);
         y = base - bump1 - bump2;
         break;
       }
 
-      // 6. DESERT DUNES: Sweeping asymmetric sand ridges
       case "dunes": {
-        const base = H * 0.81;
+        const base = H * 0.71;
         const wave1 = Math.sin(nx * Math.PI * 2.8 + seed);
         const shaped1 = (wave1 > 0 ? Math.pow(wave1, 1.4) : -Math.pow(-wave1, 0.7)) * (H * 0.065);
         const wave2 = Math.cos(nx * Math.PI * 5.2 - seed) * (H * 0.02);
@@ -180,15 +173,13 @@ function generateBattlefield() {
       }
 
       default:
-        y = H * 0.80;
+        y = H * 0.70;
         break;
     }
 
-    // Keep ground clamped within lower 48% to 94% height range
-    terrain[x] = Math.max(H * 0.48, Math.min(H * 0.94, y));
+    terrain[x] = Math.max(H * 0.40, Math.min(H * 0.85, y));
   }
 
-  // Generate Trees along the new lower ridge
   trees = [];
   if (activeTerrainTheme !== "dunes") {
     let treeSpacing = 28;
@@ -206,14 +197,13 @@ function generateBattlefield() {
     }
   }
 
-  // Clouds drifting in wide open sky
   clouds = [
     { x: W * 0.06, y: H * 0.12, scale: 1.15, alpha: 0.62 },
-    { x: W * 0.24, y: H * 0.32, scale: 0.85, alpha: 0.72 },
+    { x: W * 0.24, y: H * 0.30, scale: 0.85, alpha: 0.72 },
     { x: W * 0.64, y: H * 0.16, scale: 0.95, alpha: 0.48 }
   ];
 
-  // Distribute tanks across lower hills
+  // Spawn tanks inward (22% to 78% of screen width) so they are NEVER blocked by left/right corner touch pads!
   const count = players.length;
   players.forEach((p, idx) => {
     p.alive = true;
@@ -222,7 +212,7 @@ function generateBattlefield() {
     p.falling = false;
     p.vy = 0;
     p.parachuteOpen = false;
-    const margin = W * 0.12;
+    const margin = W * 0.22;
     const usableW = W - margin * 2;
     p.x = Math.floor(margin + (count === 1 ? usableW * 0.5 : (idx / (count - 1)) * usableW));
     p.y = getTerrainY(p.x);
@@ -234,7 +224,7 @@ function generateBattlefield() {
 
 function getTerrainY(x) {
   const ix = Math.max(0, Math.min(W, Math.round(x)));
-  return terrain[ix] || H * 0.80;
+  return terrain[ix] || H * 0.70;
 }
 
 function getTerrainSlopeAngle(x) {
@@ -255,7 +245,7 @@ function carveCrater(cx, cy, radius, isDirt) {
     if (isDirt) {
       const moundTop = cy - chord;
       if (terrain[x] > moundTop) {
-        terrain[x] = Math.max(H * 0.35, terrain[x] - chord * 0.85);
+        terrain[x] = Math.max(H * 0.30, terrain[x] - chord * 0.85);
       }
     } else {
       const craterBottom = cy + chord;

@@ -48,47 +48,48 @@ html, body {
 }
 
 /* =========================================================
-   MINECRAFT-STYLE BEVELED TOUCH BUTTONS (WITH !IMPORTANT)
+   SEE-THROUGH MINECRAFT BEVELED TOUCH BUTTONS
    ========================================================= */
 button.mc-pad-btn {
-  background-color: rgba(226, 232, 240, 0.72) !important;
-  backdrop-filter: blur(3px) !important;
-  -webkit-backdrop-filter: blur(3px) !important;
-  border-top: 3px solid rgba(255, 255, 255, 0.95) !important;
-  border-left: 3px solid rgba(255, 255, 255, 0.95) !important;
-  border-right: 3px solid rgba(30, 41, 59, 0.8) !important;
-  border-bottom: 3px solid rgba(15, 23, 42, 0.9) !important;
-  border-radius: 6px !important;
+  background-color: rgba(255, 255, 255, 0.20) !important;
+  backdrop-filter: blur(1px) !important;
+  -webkit-backdrop-filter: blur(1px) !important;
+  border-top: 2.5px solid rgba(255, 255, 255, 0.65) !important;
+  border-left: 2.5px solid rgba(255, 255, 255, 0.65) !important;
+  border-right: 2.5px solid rgba(15, 23, 42, 0.50) !important;
+  border-bottom: 2.5px solid rgba(15, 23, 42, 0.60) !important;
+  border-radius: 5px !important;
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.45), inset 0 0 0 1px rgba(255, 255, 255, 0.4) !important;
-  color: #0f172a !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25), inset 0 0 0 1px rgba(255, 255, 255, 0.2) !important;
+  color: rgba(255, 255, 255, 0.92) !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.85) !important;
   touch-action: none !important;
   cursor: pointer !important;
   transition: transform 0.05s ease, background-color 0.05s ease !important;
 }
 
 button.mc-pad-btn:active {
-  background-color: rgba(148, 163, 184, 0.88) !important;
-  border-top: 3px solid rgba(15, 23, 42, 0.85) !important;
-  border-left: 3px solid rgba(15, 23, 42, 0.85) !important;
-  border-right: 3px solid rgba(255, 255, 255, 0.9) !important;
-  border-bottom: 3px solid rgba(255, 255, 255, 0.9) !important;
-  transform: translateY(2px) !important;
+  background-color: rgba(255, 255, 255, 0.45) !important;
+  border-top: 2.5px solid rgba(15, 23, 42, 0.60) !important;
+  border-left: 2.5px solid rgba(15, 23, 42, 0.60) !important;
+  border-right: 2.5px solid rgba(255, 255, 255, 0.65) !important;
+  border-bottom: 2.5px solid rgba(255, 255, 255, 0.65) !important;
+  transform: translateY(1.5px) !important;
 }
 
 button.mc-pad-btn.mc-pad-btn-fire {
-  background-color: rgba(239, 68, 68, 0.78) !important;
-  border-top: 3px solid rgba(254, 226, 226, 0.95) !important;
-  border-left: 3px solid rgba(254, 226, 226, 0.95) !important;
-  border-right: 3px solid rgba(127, 29, 29, 0.9) !important;
-  border-bottom: 3px solid rgba(69, 10, 10, 0.95) !important;
+  background-color: rgba(239, 68, 68, 0.32) !important;
+  border-top: 2.5px solid rgba(254, 202, 202, 0.75) !important;
+  border-left: 2.5px solid rgba(254, 202, 202, 0.75) !important;
+  border-right: 2.5px solid rgba(127, 29, 29, 0.65) !important;
+  border-bottom: 2.5px solid rgba(69, 10, 10, 0.75) !important;
   color: #ffffff !important;
 }
 
 button.mc-pad-btn.mc-pad-btn-fire:active {
-  background-color: rgba(185, 28, 28, 0.92) !important;
+  background-color: rgba(220, 38, 38, 0.60) !important;
 }
 
 /* =========================================================
