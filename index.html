@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>Tanks - Classic Artillery Game</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Oswald:wght@700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* Critical override so Tailwind CDN never strips Minecraft Touch Button boxes */
+    button.mc-pad-btn {
+      background-color: rgba(226, 232, 240, 0.72) !important;
+      backdrop-filter: blur(3px) !important;
+      -webkit-backdrop-filter: blur(3px) !important;
+      border-top: 3px solid rgba(255, 255, 255, 0.95) !important;
+      border-left: 3px solid rgba(255, 255, 255, 0.95) !important;
+      border-right: 3px solid rgba(30, 41, 59, 0.8) !important;
+      border-bottom: 3px solid rgba(15, 23, 42, 0.9) !important;
+      border-radius: 6px !important;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.45), inset 0 0 0 1px rgba(255, 255, 255, 0.4) !important;
+      color: #0f172a !important;
+    }
+    button.mc-pad-btn:active {
+      background-color: rgba(148, 163, 184, 0.88) !important;
+      border-top: 3px solid rgba(15, 23, 42, 0.85) !important;
+      border-left: 3px solid rgba(15, 23, 42, 0.85) !important;
+      border-right: 3px solid rgba(255, 255, 255, 0.9) !important;
+      border-bottom: 3px solid rgba(255, 255, 255, 0.9) !important;
+      transform: translateY(2px) !important;
+    }
+    button.mc-pad-btn.mc-pad-btn-fire {
+      background-color: rgba(239, 68, 68, 0.78) !important;
+      border-top: 3px solid rgba(254, 226, 226, 0.95) !important;
+      border-left: 3px solid rgba(254, 226, 226, 0.95) !important;
+      border-right: 3px solid rgba(127, 29, 29, 0.9) !important;
+      border-bottom: 3px solid rgba(69, 10, 10, 0.95) !important;
+      color: #ffffff !important;
+    }
+    button.mc-pad-btn.mc-pad-btn-fire:active {
+      background-color: rgba(185, 28, 28, 0.92) !important;
+    }
+  </style>
+</head>
+<body class="fixed inset-0 flex items-center justify-center w-full h-full bg-[#111317] p-0 overflow-hidden select-none">
+
+  <!-- PORTRAIT ORIENTATION ROTATE SCREEN PROMPT (FOR MOBILE) -->
+  <div id="rotateDeviceOverlay" class="fixed inset-0 z-50 bg-[#161d0d]/95 text-white flex-col items-center justify-center p-6 text-center select-none hidden">
+    <div class="relative w-20 h-20 mb-4 flex items-center justify-center">
+      <svg viewBox="0 0 100 100" class="w-full h-full animate-pulse text-[#a3e635]">
+        <rect x="26" y="15" width="48" height="70" rx="6" fill="none" stroke="currentColor" stroke-width="4.5" />
+        <circle cx="50" cy="76" r="3.5" fill="currentColor" />
+        <line x1="42" y1="22" x2="58" y2="22" stroke="currentColor" stroke-width="3" stroke-linecap="round" />
+        <path d="M12,42 C12,24 28,10 50,10" fill="none" stroke="#facc15" stroke-width="4" stroke-dasharray="6 4" />
+        <polygon points="52,4 62,10 52,16" fill="#facc15" />
+      </svg>
+    </div>
+    <h2 class="text-xl font-black uppercase tracking-wider text-[#a3e635] mb-2" style="font-family: 'Oswald', sans-serif;">
+      ROTATE DEVICE FOR BEST VIEW
+    </h2>
+    <p class="text-xs font-semibold text-slate-300 max-w-xs leading-relaxed">
+      Tanks plays best in <strong>Horizontal (Landscape)</strong> mode!
+    </p>
+    <div class="flex items-center gap-3 mt-5">
+      <button id="btnForceFullscreen" type="button" class="px-4 py-2 rounded-full font-bold text-xs uppercase tracking-wider bg-[#65a30d] text-white border border-[#bef264] shadow-lg">
+        Lock Landscape ⛶
+      </button>
+      <button onclick="document.getElementById('rotateDeviceOverlay').style.setProperty('display', 'none', 'important')" type="button" class="px-4 py-2 rounded-full font-bold text-xs uppercase tracking-wider bg-slate-700 text-slate-200 border border-slate-500">
+        Play Anyway ➔
+      </button>
+    </div>
+  </div>
+
+  <!-- Outer Rounded Classic Game Frame -->
+  <div id="gameFrame" class="relative w-full h-full max-w-[1100px] sm:max-h-[760px] bg-[#d0e2fa] sm:rounded-[20px] overflow-hidden shadow-2xl border-0 sm:border-2 border-[#141619] flex flex-col">
+
+    <!-- ========================================== -->
+    <!-- CLASSIC STARTING & PLAYER SELECTION SCREENS -->
+    <!-- ========================================== -->
+    <div id="startMenuContainer" class="absolute inset-0 z-40 flex flex-col justify-between p-2.5 sm:p-6 pb-8 sm:pb-6 select-none overflow-y-auto overflow-x-hidden bg-[#1e280c]">
+      
+      <!-- ULTRA-DETAILED PREMIUM MILITARY TANK & FOREST ARTWORK SVG -->
+      <svg viewBox="0 0 1000 680" preserveAspectRatio="xMidYMid slice" class="fixed sm:absolute inset-0 w-full h-full pointer-events-none z-0">
+        <defs>
+          <radialGradient id="canopySunGlow" cx="72%" cy="22%" r="75%">
+            <stop offset="0%" stop-color="#f7fee7" />
+            <stop offset="28%" stop-color="#d9f09d" />
+            <stop offset="55%" stop-color="#6b8234" />
+            <stop offset="82%" stop-color="#2e3b12" />
+            <stop offset="100%" stop-color="#131a06" />
+          </radialGradient>
+          <linearGradient id="godRayGrad" x1="1" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#f7fee7" stop-opacity="0.45" />
+            <stop offset="60%" stop-color="#bef264" stop-opacity="0.12" />
+            <stop offset="100%" stop-color="#3f6212" stop-opacity="0" />
+          </linearGradient>
+          <linearGradient id="hullMainGrad" x1="0" y1="0" x2="0.8" y2="1">
+            <stop offset="0%" stop-color="#879954" />
+            <stop offset="35%" stop-color="#5c6e30" />
+            <stop offset="70%" stop-color="#354218" />
+            <stop offset="100%" stop-color="#192109" />
+          </linearGradient>
+          <linearGradient id="turretCastGrad" x1="0.8" y1="0.1" x2="0.1" y2="0.9">
+            <stop offset="0%" stop-color="#b5c97b" />
+            <stop offset="25%" stop-color="#7c8f46" />
+            <stop offset="65%" stop-color="#43521f" />
+            <stop offset="100%" stop-color="#1f280c" />
+          </linearGradient>
+          <linearGradient id="steelPlateGrad" x1="0" y1="0" x2="0.8" y2="1">
+            <stop offset="0%" stop-color="#708240" />
+            <stop offset="50%" stop-color="#465422" />
+            <stop offset="100%" stop-color="#21290d" />
+          </linearGradient>
+          <linearGradient id="wheelMetalGrad" x1="0.2" y1="0" x2="0.8" y2="1">
+            <stop offset="0%" stop-color="#687a3b" />
+            <stop offset="50%" stop-color="#3d4b1d" />
+            <stop offset="100%" stop-color="#1b230a" />
+          </linearGradient>
+          <linearGradient id="pistonChrome" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#9caea0" />
+            <stop offset="40%" stop-color="#5c6b42" />
+            <stop offset="100%" stop-color="#222a10" />
+          </linearGradient>
+          <radialGradient id="muzzleOuterGlow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#ffffff" stop-opacity="1" />
+            <stop offset="50%" stop-color="#fefce8" stop-opacity="0.95" />
+            <stop offset="72%" stop-color="#d9f99d" stop-opacity="0.65" />
+            <stop offset="88%" stop-color="#84cc16" stop-opacity="0.25" />
+            <stop offset="100%" stop-color="#365314" stop-opacity="0" />
+          </radialGradient>
+          <linearGradient id="muzzleConeGrad" x1="0" y1="0.5" x2="1" y2="0.5">
+            <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95" />
+            <stop offset="40%" stop-color="#ffffff" stop-opacity="1" />
+            <stop offset="100%" stop-color="#f7fee7" stop-opacity="0.9" />
+          </linearGradient>
+          <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="14" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+          <filter id="smokeBlur" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="6" />
+          </filter>
+          <g id="rivet">
+            <circle cx="0" cy="1" r="3.5" fill="#141b07" />
+            <circle cx="0" cy="0" r="3" fill="#6b7d3e" />
+            <circle cx="-1" cy="-1" r="1.2" fill="#a8bd72" />
+          </g>
+        </defs>
+
+        <rect width="1000" height="680" fill="url(#canopySunGlow)" />
+        <g opacity="0.55">
+          <polygon points="750,0 180,680 340,680 880,0" fill="url(#godRayGrad)" />
+          <polygon points="580,0 20,680 120,680 670,0" fill="url(#godRayGrad)" />
+          <polygon points="920,0 450,680 640,680 1000,0" fill="url(#godRayGrad)" />
+        </g>
+        <g fill="#42541e" opacity="0.65">
+          <path d="M0,80 Q60,30 130,90 T260,70 T390,110 T540,60 L540,480 L0,480 Z" />
+          <path d="M460,40 Q550,0 640,55 T820,30 L820,420 L460,420 Z" fill="#556b28" />
+        </g>
+        <g stroke="#232e0d" fill="#232e0d">
+          <path d="M105,0 L92,460 L122,460 L114,0 Z" fill="#2b3811" />
+          <path d="M35,0 L24,440 L48,440 L42,0 Z" fill="#1f290b" opacity="0.85" />
+          <path d="M215,0 L205,390 L222,390 L220,0 Z" fill="#334216" opacity="0.7" />
+          <path d="M10,45 Q85,15 165,55 Q210,85 140,120 Q70,135 10,95 Z" fill="#314014" />
+          <path d="M60,110 Q145,75 235,125 Q270,165 185,195 Q110,205 60,155 Z" fill="#3a4b19" />
+          <path d="M-20,165 Q65,135 145,180 Q180,220 95,250 Q20,260 -20,210 Z" fill="#25310e" />
+          <path d="M140,15 Q240,-10 330,35 Q370,80 275,110 Q190,115 140,65 Z" fill="#465920" opacity="0.85" />
+        </g>
+        <path d="M0,410 Q90,360 180,395 Q280,340 390,380 Q480,260 580,285 Q665,245 745,295 Q845,255 935,305 L1000,285 L1000,680 L0,680 Z" fill="#1d260a" />
+        <path d="M520,330 Q575,270 645,305 Q710,260 785,310 Q860,275 940,335 L1000,320 L1000,680 L520,680 Z" fill="#151c07" />
+
+        <g transform="translate(10, 8)">
+          <g>
+            <path d="M42,665 L148,395 L235,365 L350,355 L340,625 Z" fill="#182008" stroke="#0f1404" stroke-width="3" />
+            <path d="M55,655 L155,402 L232,374 L265,378 L168,655 Z" fill="url(#steelPlateGrad)" stroke="#141a07" stroke-width="2.5" />
+            <g stroke="#1b230a" stroke-width="3" opacity="0.85">
+              <line x1="148" y1="415" x2="215" y2="395" /><line x1="138" y1="440" x2="210" y2="418" />
+              <line x1="128" y1="465" x2="205" y2="442" /><line x1="118" y1="490" x2="198" y2="468" />
+              <line x1="108" y1="518" x2="192" y2="495" /><line x1="96" y1="546" x2="185" y2="522" />
+              <line x1="85" y1="575" x2="178" y2="550" /><line x1="74" y1="605" x2="170" y2="578" />
+              <line x1="62" y1="635" x2="162" y2="608" />
+            </g>
+          </g>
+
+          <g>
+            <ellipse cx="395" cy="362" rx="122" ry="22" fill="#252f0f" stroke="#121806" stroke-width="3" />
+            <path d="M278,362 C292,208 492,205 512,355 Z" fill="url(#turretCastGrad)" stroke="#1b2309" stroke-width="3.5" />
+            <path d="M315,295 Q355,265 385,290 Q410,320 365,345 Q320,340 315,295 Z" fill="#2f3b14" opacity="0.65" />
+            <path d="M425,255 Q465,245 485,285 Q495,325 450,335 Q420,305 425,255 Z" fill="#273210" opacity="0.7" />
+            <path d="M405,222 C455,225 495,268 508,348" fill="none" stroke="#d9f99d" stroke-width="4" opacity="0.7" />
+            <ellipse cx="392" cy="226" rx="48" ry="13" fill="#4f6028" stroke="#1b2309" stroke-width="3" />
+            <path d="M356,222 C365,198 418,198 428,222 Z" fill="url(#steelPlateGrad)" stroke="#1b2309" stroke-width="2.5" />
+            <ellipse cx="392" cy="204" rx="24" ry="6" fill="#7d9147" stroke="#1b2309" stroke-width="2" />
+            <path d="M445,268 L515,245 L528,282 L455,305 Z" fill="#3a471b" stroke="#171e08" stroke-width="3" />
+            <path d="M495,252 L575,218 L586,244 L506,278 Z" fill="#526328" stroke="#1b2309" stroke-width="2.5" />
+          </g>
+
+          <g>
+            <polygon points="145,425 415,332 775,402 765,615 115,665" fill="url(#hullMainGrad)" stroke="#141a07" stroke-width="4" />
+            <polygon points="415,332 765,400 725,455 395,385" fill="#758843" stroke="#222b0e" stroke-width="2.5" opacity="0.85" />
+            <polygon points="510,352 615,372 565,445 465,415" fill="#2c3812" opacity="0.65" />
+            <polygon points="645,378 735,396 695,485 605,460" fill="#242e0e" opacity="0.7" />
+            <line x1="415" y1="332" x2="365" y2="635" stroke="#182008" stroke-width="3.5" />
+            <line x1="145" y1="425" x2="402" y2="412" stroke="#182008" stroke-width="3" />
+            <use href="#rivet" x="425" y="348" /><use href="#rivet" x="465" y="356" />
+            <use href="#rivet" x="505" y="364" /><use href="#rivet" x="545" y="372" />
+            <use href="#rivet" x="585" y="380" /><use href="#rivet" x="625" y="388" />
+          </g>
+
+          <g>
+            <circle cx="445" cy="535" r="108" fill="url(#wheelMetalGrad)" stroke="#141b07" stroke-width="6" />
+            <circle cx="445" cy="535" r="82" fill="#2e3914" stroke="#5c6e31" stroke-width="3" />
+            <circle cx="445" cy="535" r="56" fill="url(#wheelMetalGrad)" stroke="#182008" stroke-width="4" />
+            <circle cx="445" cy="535" r="22" fill="#232c0f" stroke="#121706" stroke-width="3" />
+            <use href="#rivet" x="445" y="440" /><use href="#rivet" x="492" y="453" />
+            <use href="#rivet" x="527" y="487" /><use href="#rivet" x="540" y="535" />
+            <use href="#rivet" x="527" y="582" /><use href="#rivet" x="492" y="617" />
+            <use href="#rivet" x="445" y="630" /><use href="#rivet" x="398" y="617" />
+            <use href="#rivet" x="363" y="582" /><use href="#rivet" x="350" y="535" />
+            <use href="#rivet" x="363" y="487" /><use href="#rivet" x="398" y="453" />
+
+            <rect x="185" y="520" width="125" height="14" rx="4" fill="url(#pistonChrome)" stroke="#141a07" stroke-width="2.5" />
+            <rect x="295" y="505" width="145" height="42" rx="8" fill="url(#steelPlateGrad)" stroke="#141a07" stroke-width="3.5" />
+            <rect x="315" y="501" width="18" height="50" rx="3" fill="#4f6028" stroke="#141a07" stroke-width="2.5" />
+            <rect x="405" y="501" width="22" height="50" rx="3" fill="#4f6028" stroke="#141a07" stroke-width="2.5" />
+            <circle cx="445" cy="535" r="9" fill="#5e7032" stroke="#141a07" stroke-width="2" />
+
+            <rect x="145" y="605" width="365" height="48" fill="#212a0d" stroke="#111605" stroke-width="3.5" />
+            <rect x="225" y="585" width="95" height="32" fill="#323f16" stroke="#141a07" stroke-width="2.5" />
+          </g>
+
+          <g>
+            <path d="M555,670 L590,395 L710,390 L915,455 L935,670 Z" fill="#121806" />
+            <polygon points="560,670 595,402 668,398 632,670" fill="url(#steelPlateGrad)" stroke="#141a07" stroke-width="3.5" />
+            <line x1="590" y1="445" x2="662" y2="442" stroke="#141a07" stroke-width="3" />
+            <line x1="582" y1="505" x2="654" y2="502" stroke="#141a07" stroke-width="3" />
+            <line x1="574" y1="565" x2="646" y2="562" stroke="#141a07" stroke-width="3" />
+            <line x1="566" y1="625" x2="638" y2="622" stroke="#141a07" stroke-width="3" />
+            <use href="#rivet" x="606" y="420" /><use href="#rivet" x="648" y="418" />
+            <use href="#rivet" x="600" y="465" /><use href="#rivet" x="642" y="463" />
+            <use href="#rivet" x="596" y="488" /><use href="#rivet" x="638" y="486" />
+            <use href="#rivet" x="592" y="525" /><use href="#rivet" x="634" y="523" />
+            <use href="#rivet" x="588" y="548" /><use href="#rivet" x="630" y="546" />
+            <use href="#rivet" x="584" y="585" /><use href="#rivet" x="626" y="583" />
+            <use href="#rivet" x="580" y="608" /><use href="#rivet" x="622" y="606" />
+
+            <circle cx="795" cy="555" r="96" fill="#1e270b" stroke="#475723" stroke-width="8" />
+            <circle cx="795" cy="555" r="72" fill="#2c3812" stroke="#141a07" stroke-width="5" />
+            <circle cx="795" cy="555" r="44" fill="#3d4c1c" stroke="#192109" stroke-width="4" />
+            <path d="M668,398 L855,442 C925,468 945,575 895,665 L835,665 C875,585 865,495 795,472 L658,442 Z"
+                  fill="url(#wheelMetalGrad)" stroke="#121706" stroke-width="3.5" />
+
+            <g stroke="#141b07" stroke-width="4.5">
+              <line x1="685" y1="402" x2="675" y2="445" /><line x1="720" y1="410" x2="710" y2="452" />
+              <line x1="755" y1="418" x2="742" y2="460" /><line x1="790" y1="426" x2="775" y2="468" />
+              <line x1="825" y1="436" x2="808" y2="476" /><line x1="860" y1="450" x2="835" y2="488" />
+              <line x1="890" y1="472" x2="856" y2="505" /><line x1="910" y1="502" x2="868" y2="526" />
+              <line x1="920" y1="536" x2="874" y2="552" /><line x1="922" y1="572" x2="874" y2="580" />
+              <line x1="916" y1="608" x2="868" y2="608" /><line x1="905" y1="642" x2="858" y2="636" />
+            </g>
+          </g>
+        </g>
+
+        <g>
+          <polygon points="505,268 1000,-20 1000,490" fill="url(#muzzleOuterGlow)" filter="url(#softGlow)" />
+          <ellipse cx="835" cy="215" rx="285" ry="205" fill="url(#muzzleOuterGlow)" filter="url(#softGlow)" />
+          <polygon points="512,266 1000,25 1000,420" fill="url(#muzzleConeGrad)" filter="url(#softGlow)" />
+          <ellipse cx="845" cy="215" rx="235" ry="155" fill="#ffffff" filter="url(#softGlow)" />
+          <g filter="url(#smokeBlur)" opacity="0.88">
+            <path d="M775,65 Q825,45 875,72 Q935,55 965,95 Q925,135 855,122 Q795,115 775,65 Z" fill="#2c3812" />
+            <path d="M815,82 Q865,68 915,92 Q955,88 975,118 Q920,142 865,128 Q825,118 815,82 Z" fill="#182008" />
+            <path d="M685,22 Q735,5 785,28 Q755,62 705,52 Z" fill="#4a5c22" opacity="0.7" />
+            <path d="M925,155 Q965,145 995,175 Q965,205 925,185 Z" fill="#283310" opacity="0.75" />
+          </g>
+        </g>
+        <rect width="1000" height="680" fill="none" stroke="#0c1004" stroke-width="16" opacity="0.45" />
+      </svg>
+
+      <!-- TOP-LEFT GIANT 3D METALLIC "TANKS" LOGO -->
+      <div class="relative z-10 pt-0.5 pl-1 shrink-0">
+        <svg viewBox="0 0 560 145" class="w-[180px] sm:w-[420px] h-auto drop-shadow-[0_8px_10px_rgba(0,0,0,0.75)]">
+          <defs>
+            <linearGradient id="tanksLogoGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#ffffff" />
+              <stop offset="18%" stop-color="#ffffff" />
+              <stop offset="42%" stop-color="#cbe08e" />
+              <stop offset="68%" stop-color="#6e8c28" />
+              <stop offset="90%" stop-color="#384912" />
+              <stop offset="100%" stop-color="#222d0a" />
+            </linearGradient>
+          </defs>
+          <text x="12" y="122" font-family="Oswald, Impact, 'Arial Black', sans-serif" font-size="134" font-weight="900" letter-spacing="4" fill="none" stroke="#3d4e1a" stroke-width="14" stroke-linejoin="round">TANKS</text>
+          <text x="12" y="122" font-family="Oswald, Impact, 'Arial Black', sans-serif" font-size="134" font-weight="900" letter-spacing="4" fill="url(#tanksLogoGrad)" stroke="#222d0a" stroke-width="4" stroke-linejoin="round" paint-order="stroke fill">TANKS</text>
+          <text x="12" y="122" font-family="Oswald, Impact, 'Arial Black', sans-serif" font-size="134" font-weight="900" letter-spacing="4" fill="none" stroke="#f7fee7" stroke-width="2" opacity="0.85">TANKS</text>
+        </svg>
+      </div>
+
+      <!-- SCREEN 1: 6 TERRAINS, PLAYERS, NEXT BUTTON & CONTROLS -->
+      <div id="menuScreen1" class="relative z-10 flex-1 flex flex-col sm:flex-row items-center justify-center gap-2.5 sm:gap-8 my-auto py-1">
+        
+        <div class="w-[92%] max-w-[315px] rounded-[20px] p-3 sm:p-4 flex flex-col justify-between border border-white/50 shadow-2xl"
+             style="background: rgba(225, 232, 208, 0.82); backdrop-filter: blur(4px);">
+          <div>
+            <h2 class="text-center font-extrabold text-[18px] sm:text-[22px] text-[#0c1006] tracking-wide uppercase mb-1"
+                style="font-family: 'Oswald', Impact, sans-serif;">TERRAIN TYPE</h2>
+            
+            <div class="grid grid-cols-2 sm:grid-cols-1 gap-1 sm:gap-1.5 pl-1 sm:pl-2" id="terrainRadioGroup">
+              <div class="menu-radio-row flex items-center gap-2 cursor-pointer" data-terrain="peaks">
+                <span class="classic-radio-circle w-4 h-4 rounded-full bg-white border-2 border-[#1e293b] inline-flex items-center justify-center shrink-0"></span>
+                <span class="font-extrabold text-[11.5px] sm:text-[13.5px] text-[#1f2918] tracking-wide" style="font-family: 'Oswald', Impact, sans-serif;">HIGH PEAKS</span>
+              </div>
+              <div class="menu-radio-row flex items-center gap-2 cursor-pointer" data-terrain="hills">
+                <span class="classic-radio-circle w-4 h-4 rounded-full bg-white border-2 border-[#1e293b] inline-flex items-center justify-center shrink-0"></span>
+                <span class="font-extrabold text-[11.5px] sm:text-[13.5px] text-[#1f2918] tracking-wide" style="font-family: 'Oswald', Impact, sans-serif;">ROLLING HILLS</span>
+              </div>
+              <div class="menu-radio-row flex items-center gap-2 cursor-pointer" data-terrain="canyon">
+                <span class="classic-radio-circle w-4 h-4 rounded-full bg-white border-2 border-[#1e293b] inline-flex items-center justify-center shrink-0"></span>
+                <span class="font-extrabold text-[11.5px] sm:text-[13.5px] text-[#1f2918] tracking-wide" style="font-family: 'Oswald', Impact, sans-serif;">DEEP CANYON</span>
+              </div>
+              <div class="menu-radio-row flex items-center gap-2 cursor-pointer" data-terrain="cliffs">
+                <span class="classic-radio-circle w-4 h-4 rounded-full bg-white border-2 border-[#1e293b] inline-flex items-center justify-center shrink-0"></span>
+                <span class="font-extrabold text-[11.5px] sm:text-[13.5px] text-[#1f2918] tracking-wide" style="font-family: 'Oswald', Impact, sans-serif;">JAGGED CLIFFS</span>
+              </div>
+              <div class="menu-radio-row flex items-center gap-2 cursor-pointer" data-terrain="plains">
+                <span class="classic-radio-circle w-4 h-4 rounded-full bg-white border-2 border-[#1e293b] inline-flex items-center justify-center shrink-0"></span>
+                <span class="font-extrabold text-[11.5px] sm:text-[13.5px] text-[#1f2918] tracking-wide" style="font-family: 'Oswald', Impact, sans-serif;">FLAT PLAINS</span>
+              </div>
+              <div class="menu-radio-row flex items-center gap-2 cursor-pointer" data-terrain="dunes">
+                <span class="classic-radio-circle w-4 h-4 rounded-full bg-white border-2 border-[#1e293b] inline-flex items-center justify-center shrink-0"></span>
+                <span class="font-extrabold text-[11.5px] sm:text-[13.5px] text-[#1f2918] tracking-wide" style="font-family: 'Oswald', Impact, sans-serif;">DESERT DUNES</span>
+              </div>
+              <div class="menu-radio-row flex items-center gap-2 cursor-pointer col-span-2 sm:col-span-1" data-terrain="random">
+                <span class="classic-radio-circle active w-4 h-4 rounded-full bg-white border-2 border-[#1e293b] inline-flex items-center justify-center shrink-0"></span>
+                <span class="font-extrabold text-[11.5px] sm:text-[13.5px] text-[#1f2918] tracking-wide" style="font-family: 'Oswald', Impact, sans-serif;">RANDOM</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-2 pt-1.5 text-center border-t border-black/15">
+            <h2 class="font-extrabold text-[16px] sm:text-[19px] text-[#0c1006] tracking-wide uppercase leading-tight"
+                style="font-family: 'Oswald', Impact, sans-serif;">PLAYERS</h2>
+            <p class="text-[9.5px] leading-tight font-extrabold text-[#1a2112] uppercase px-1"
+               style="font-family: 'Oswald', Impact, sans-serif;">
+              (2 PLAYERS = 1 HUMAN VS 1 CPU OR 2 HUMANS)
+            </p>
+            <div class="flex items-center justify-center gap-3 mt-1.5">
+              <div id="menuTotalPlayersBadge" class="w-7 h-7 rounded-full bg-white border-2 border-[#111] flex items-center justify-center font-extrabold text-base text-black shadow">
+                2
+              </div>
+              <div class="flex items-center gap-2">
+                <button id="btnMenuPlayersDec" type="button" class="w-6 h-6 flex items-center justify-center text-[#28331a] hover:text-black hover:scale-110 cursor-pointer">
+                  <svg viewBox="0 0 16 16" class="w-4 h-4 fill-current"><polygon points="13,2 3,8 13,14"/></svg>
+                </button>
+                <button id="btnMenuPlayersInc" type="button" class="w-6 h-6 flex items-center justify-center text-[#28331a] hover:text-black hover:scale-110 cursor-pointer">
+                  <svg viewBox="0 0 16 16" class="w-4 h-4 fill-current"><polygon points="3,2 13,8 3,14"/></svg>
+                </button>
+              </div>
+            </div>
+
+            <div class="mt-2.5 pt-2 border-t border-black/15 flex items-center justify-center gap-2.5">
+              <span class="font-extrabold text-[17px] sm:text-[20px] text-[#0c1006] uppercase tracking-wide"
+                    style="font-family: 'Oswald', Impact, sans-serif;">NEXT</span>
+              <button id="btnGoToPlayerSetup" type="button"
+                      class="w-14 h-8 rounded border-2 border-white shadow-lg flex items-center justify-center cursor-pointer hover:scale-105 active:scale-95 transition"
+                      style="background: linear-gradient(180deg, #99b84b 0%, #638221 100%);"
+                      title="Go to Player Selection">
+                <svg viewBox="0 0 24 16" class="w-7 h-5 fill-white"><polygon points="2,5 14,5 14,1 23,8 14,15 14,11 2,11" /></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="w-[92%] max-w-[300px] rounded-[20px] p-2.5 sm:p-4 flex flex-col items-center text-center border border-white/50 shadow-2xl"
+             style="background: rgba(225, 232, 208, 0.82); backdrop-filter: blur(4px);">
+          <h2 class="font-extrabold text-[17px] sm:text-[23px] text-[#0c1006] tracking-wide uppercase mb-1 sm:mb-2"
+              style="font-family: 'Oswald', Impact, sans-serif;">CONTROLS</h2>
+          <div class="space-y-1 sm:space-y-1.5 text-[11px] sm:text-[13px] font-bold text-[#1e2615] uppercase tracking-wide leading-tight"
+               style="font-family: 'Oswald', Impact, sans-serif;">
+            <div>LEFT &amp; RIGHT ARROW: <span class="text-[#2f3b1c]">MOVE</span></div>
+            <div>UP &amp; DOWN ARROW: <span class="text-[#2f3b1c]">CANNON ROTATION</span></div>
+            <div>PGUP &amp; PGDN: <span class="text-[#2f3b1c]">FIRE POWER</span></div>
+            <div>"Q" &amp; "W": <span class="text-[#2f3b1c]">CHANGE WEAPON</span></div>
+            <div>SPACE: <span class="text-[#2f3b1c]">FIRE</span></div>
+            <div class="text-[10px] text-emerald-800 font-extrabold pt-0.5">
+              📱 MOBILE: D-PAD &amp; TOUCH BUTTONS!
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SCREEN 2 & 3: PLAYER SETUP & AI DIFFICULTY -->
+      <div id="menuScreen2" class="hidden relative z-10 flex-1 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-7 my-auto py-1">
+        <div class="w-[92%] max-w-[360px] rounded-[20px] p-3.5 sm:p-5 flex flex-col justify-between border border-white/50 shadow-2xl"
+             style="background: rgba(225, 232, 208, 0.85); backdrop-filter: blur(4px);">
+          <h2 id="setupPlayerHeading" class="font-extrabold text-[20px] sm:text-[25px] text-[#0c1006] text-center uppercase mb-2.5"
+              style="font-family: 'Oswald', Impact, sans-serif;">PLAYER 1</h2>
+
+          <div class="space-y-2.5 text-[14px] font-bold text-[#1e2615]" style="font-family: 'Oswald', Impact, sans-serif;">
+            <div class="flex items-center justify-between gap-2">
+              <label for="setupPlayerNameInput" class="tracking-wide text-xs sm:text-sm">NAME:</label>
+              <input id="setupPlayerNameInput" type="text" maxlength="14"
+                     class="w-[170px] sm:w-[210px] h-8 px-2 bg-white border-[1.5px] border-[#222] text-black font-sans font-bold text-xs sm:text-sm focus:outline-none shadow-inner" />
+            </div>
+
+            <div class="flex items-center justify-between gap-2">
+              <span class="tracking-wide text-xs sm:text-sm">COLOR:</span>
+              <div id="setupColorSwatches" class="flex items-center gap-2"></div>
+            </div>
+
+            <div class="flex items-center justify-between gap-2 pt-0.5">
+              <label for="setupCpuCheckbox" class="tracking-wide cursor-pointer text-xs sm:text-sm">COMPUTER CONTROLLED:</label>
+              <button id="setupCpuCheckbox" type="button"
+                      class="w-6 h-6 border-[1.5px] border-[#1e293b] bg-[#9aa86d]/75 flex items-center justify-center text-black cursor-pointer shadow-inner">
+                <svg id="setupCpuCheckmark" viewBox="0 0 20 20" class="hidden w-5 h-5 stroke-[#0f172a] stroke-[3] fill-none">
+                  <polyline points="3,11 8,16 18,3" />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-center gap-3 mt-3.5 pt-2 border-t border-black/15">
+            <span id="setupNextBtnLabel" class="font-extrabold text-[18px] sm:text-[22px] text-[#0c1006] uppercase"
+                  style="font-family: 'Oswald', Impact, sans-serif;">NEXT PLAYER</span>
+            <button id="btnSetupNextPlayer" type="button"
+                    class="w-14 h-8 rounded border-2 border-white shadow-md flex items-center justify-center cursor-pointer hover:scale-105 active:scale-95"
+                    style="background: linear-gradient(180deg, #99b84b 0%, #638221 100%);">
+              <svg viewBox="0 0 24 16" class="w-7 h-5 fill-white"><polygon points="2,5 14,5 14,1 23,8 14,15 14,11 2,11" /></svg>
+            </button>
+          </div>
+        </div>
+
+        <div id="aiDifficultyPanel" class="hidden w-[92%] max-w-[240px] sm:w-[215px] rounded-[20px] p-3 sm:p-4 flex flex-col justify-center border border-white/50 shadow-2xl"
+             style="background: rgba(225, 232, 208, 0.85); backdrop-filter: blur(4px);">
+          <h3 class="font-extrabold text-[13px] sm:text-[15px] text-[#1e2615] tracking-wide uppercase mb-1.5 text-center sm:text-left"
+              style="font-family: 'Oswald', Impact, sans-serif;">AI DIFFICULTY:</h3>
+          <div id="aiDifficultyGroup" class="grid grid-cols-2 sm:grid-cols-1 gap-1.5 sm:gap-2" style="font-family: 'Oswald', Impact, sans-serif;">
+            <div class="ai-diff-row flex items-center justify-between font-bold text-[12px] sm:text-[13px] text-[#1f2918] cursor-pointer px-1" data-diff="very_easy">
+              <span>VERY EASY</span>
+              <span class="ai-diff-circle w-4 h-4 rounded-full border-[1.5px] border-[#334155] bg-[#33ff33] inline-flex items-center justify-center"></span>
+            </div>
+            <div class="ai-diff-row flex items-center justify-between font-bold text-[12px] sm:text-[13px] text-[#1f2918] cursor-pointer px-1" data-diff="easy">
+              <span>EASY</span>
+              <span class="ai-diff-circle w-4 h-4 rounded-full border-[1.5px] border-[#334155] bg-[#bbee22] inline-flex items-center justify-center"></span>
+            </div>
+            <div class="ai-diff-row flex items-center justify-between font-bold text-[12px] sm:text-[13px] text-[#1f2918] cursor-pointer px-1" data-diff="normal">
+              <span>NORMAL</span>
+              <span class="ai-diff-circle active w-4 h-4 rounded-full border-[1.5px] border-[#334155] bg-[#eeee22] inline-flex items-center justify-center"></span>
+            </div>
+            <div class="ai-diff-row flex items-center justify-between font-bold text-[12px] sm:text-[13px] text-[#1f2918] cursor-pointer px-1" data-diff="hard">
+              <span>HARD</span>
+              <span class="ai-diff-circle w-4 h-4 rounded-full border-[1.5px] border-[#334155] bg-[#ff8822] inline-flex items-center justify-center"></span>
+            </div>
+            <div class="ai-diff-row flex items-center justify-between font-bold text-[12px] sm:text-[13px] text-[#1f2918] cursor-pointer px-1 col-span-2 sm:col-span-1" data-diff="very_hard">
+              <span>VERY HARD</span>
+              <span class="ai-diff-circle w-4 h-4 rounded-full border-[1.5px] border-[#334155] bg-[#ff3333] inline-flex items-center justify-center"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BOTTOM FOOTER ROW -->
+      <div class="relative z-10 flex items-end justify-between w-full pt-1 shrink-0">
+        <div class="text-white/85 font-bold text-[10px] sm:text-[12px] leading-snug drop-shadow">
+          <div>Click Here To Play More Games</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TOP CLASSIC FLASH HUD BAR (RUPEE CURRENCY)  -->
+    <!-- ========================================== -->
+    <header id="hudBar" class="hud-gradient w-full h-[52px] sm:h-[68px] shrink-0 flex items-center justify-between px-1.5 sm:px-3 text-[#1e293b] text-xs z-20 overflow-x-auto overflow-y-hidden">
+
+      <div class="hud-divider flex flex-col justify-between h-full py-1 pr-1.5 sm:pr-3 min-w-[132px] sm:min-w-[180px]">
+        <div class="flex items-center justify-between gap-1">
+          <div class="bg-[#e8f0fa] border border-[#b5c7de] px-1 sm:px-1.5 py-0.5 rounded-[2px] flex items-center gap-1 shadow-inner min-w-[74px] sm:min-w-[88px]">
+            <span id="hudPlayerColorDot" class="w-2 sm:w-2.5 h-2 sm:h-2.5 rounded-full inline-block bg-black border border-white/60"></span>
+            <span id="hudPlayerName" class="font-semibold text-[10px] sm:text-[11px] text-[#334155] truncate max-w-[58px] sm:max-w-none">Player 1</span>
+          </div>
+          <button id="btnOpenShop" type="button" title="Weapon & Item Shop (B)" class="px-1.5 py-0.5 text-[9px] sm:text-[10px] font-bold bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-400 rounded shadow-sm">
+            SHOP
+          </button>
+        </div>
+
+        <div class="flex items-center gap-1 sm:gap-1.5">
+          <button id="btnMoveLeft" type="button" class="arrow-btn" title="Move Tank Left">
+            <svg viewBox="0 0 12 12" class="w-3 sm:w-3.5 h-3 sm:h-3.5 fill-current"><polygon points="10,1 2,6 10,11"/></svg>
+          </button>
+          <span id="hudFuel" class="font-bold text-[11px] sm:text-[13px] w-6 sm:w-7 text-center tabular-nums text-[#111]">250</span>
+          <button id="btnMoveRight" type="button" class="arrow-btn" title="Move Tank Right">
+            <svg viewBox="0 0 12 12" class="w-3 sm:w-3.5 h-3 sm:h-3.5 fill-current"><polygon points="2,1 10,6 2,11"/></svg>
+          </button>
+
+          <button id="btnShield" type="button" title="Toggle Shield" class="ml-0.5 sm:ml-1 w-3.5 sm:w-4 h-3.5 sm:h-4 rounded-full border-2 border-[#06b6d4] bg-[#cffafe] flex items-center justify-center">
+            <span id="shieldActiveDot" class="w-1.5 h-1.5 rounded-full bg-[#0891b2] opacity-0 transition-opacity"></span>
+          </button>
+          <span id="hudShieldCount" class="text-[9px] sm:text-[10px] font-semibold text-cyan-800 tabular-nums">1</span>
+        </div>
+
+        <div class="flex items-center gap-1.5 sm:gap-2 text-[10px] sm:text-[11px] font-semibold leading-none">
+          <span id="hudHealth" class="tabular-nums font-bold text-[#111]">100</span>
+          <button id="btnParachute" type="button" class="item-btn" title="Parachute">
+            <svg viewBox="0 0 16 16" class="w-3 sm:w-3.5 h-3 sm:h-3.5 text-slate-600 fill-current"><path d="M8 2C4.5 2 2 4.5 2 7.5h12C14 4.5 11.5 2 8 2zm-4 6l3.5 5.5h1L12 8H4z"/></svg>
+            <span id="hudParachutes" class="tabular-nums">1</span>
+          </button>
+          <button id="btnTeleport" type="button" class="item-btn" title="Teleport">
+            <svg viewBox="0 0 16 16" class="w-3 sm:w-3.5 h-3 sm:h-3.5 text-sky-600 fill-current"><polygon points="9,1 3,9 8,9 6,15 13,7 8,7"/></svg>
+            <span id="hudTeleports" class="tabular-nums">1</span>
+          </button>
+          <button id="btnRepair" type="button" class="item-btn" title="Repair Kit">
+            <svg viewBox="0 0 16 16" class="w-3 sm:w-3.5 h-3 sm:h-3.5 text-emerald-600 fill-current"><path d="M6 2h4v4h4v4h-4v4H6v-4H2V6h4V2z"/></svg>
+            <span id="hudRepairs" class="tabular-nums">1</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="hud-divider flex items-center gap-1.5 sm:gap-3 h-full py-1 px-1.5 sm:px-3 min-w-[120px] sm:min-w-[165px]">
+        <div class="flex flex-col items-center justify-between h-full">
+          <div id="powerSliderArea" class="relative w-6 sm:w-7 h-[34px] sm:h-[42px] cursor-ns-resize flex items-center justify-center">
+            <svg viewBox="0 0 28 42" class="w-full h-full overflow-visible">
+              <defs>
+                <linearGradient id="powerGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#ff0000"/><stop offset="65%" stop-color="#ef4444"/><stop offset="100%" stop-color="#fca5a5"/>
+                </linearGradient>
+              </defs>
+              <polygon points="2,1 26,1 14,41" fill="url(#powerGrad)" stroke="#b91c1c" stroke-width="0.8"/>
+              <line id="powerIndicatorLine" x1="1" y1="17" x2="27" y2="17" stroke="#111111" stroke-width="2.2"/>
+            </svg>
+          </div>
+          <span id="hudPower" class="font-bold text-[10px] sm:text-[11px] tabular-nums text-[#111] leading-none">60</span>
+        </div>
+
+        <div class="flex flex-col justify-between items-center h-full py-0.5 flex-1">
+          <div id="angleSliderArea" class="relative w-[68px] sm:w-[96px] h-3 sm:h-3.5 cursor-ew-resize flex items-center">
+            <div class="w-full h-2 sm:h-2.5 rounded-[1px] border border-red-300" style="background: linear-gradient(90deg, #fee2e2 0%, #ef4444 50%, #dc2626 100%);"></div>
+            <div id="angleIndicatorTick" class="absolute top-0 bottom-0 w-[2.5px] bg-[#111]" style="left: 54%;"></div>
+          </div>
+
+          <div class="flex items-center gap-1 sm:gap-2">
+            <svg viewBox="0 0 24 14" class="w-4 sm:w-5 h-3 sm:h-3.5">
+              <line id="miniTankBarrel" x1="12" y1="8" x2="5" y2="2" stroke="#14532d" stroke-width="2" stroke-linecap="round"/>
+              <ellipse cx="12" cy="8" rx="4.5" ry="3" fill="#15803d"/>
+              <rect x="5" y="9" width="14" height="4" rx="2" fill="#166534"/>
+            </svg>
+            <span id="hudAngle" class="font-bold text-[11px] sm:text-[12px] tabular-nums text-[#111]">54</span>
+          </div>
+
+          <button id="btnFire" type="button" class="fire-btn group" title="FIRE Weapon!">
+            <span class="w-3.5 sm:w-4 h-3.5 sm:h-4 rounded-full bg-gradient-to-b from-[#ff4d4d] via-[#dc2626] to-[#991b1b] border border-[#7f1d1d] shadow inline-block"></span>
+            <span class="absolute font-extrabold text-[10px] sm:text-[12px] tracking-wider text-[#111] group-hover:text-black">FIRE</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="hud-divider flex flex-col justify-between h-full py-1 sm:py-1.5 px-1.5 sm:px-3 flex-1 min-w-[165px] max-w-[280px]">
+        <div class="flex items-center justify-center gap-1 w-full">
+          <button id="btnPrevWeapon" type="button" class="arrow-btn" title="Previous Weapon">
+            <svg viewBox="0 0 12 12" class="w-3 h-3 fill-current"><polygon points="10,1 2,6 10,11"/></svg>
+          </button>
+
+          <div id="weaponSelectorBox" class="flex items-center border-[1.5px] border-[#334155] bg-[#f8fafc] h-[19px] sm:h-[22px] flex-1 shadow-inner cursor-pointer">
+            <div id="hudWeaponIcon" class="w-[18px] sm:w-[22px] h-full border-r border-[#475569] bg-gradient-to-b from-red-100 to-red-200 flex items-center justify-center shrink-0">
+              <span class="w-3 h-3 rounded-full bg-gradient-to-br from-yellow-300 via-orange-500 to-red-700 border border-red-900 inline-block"></span>
+            </div>
+            <div id="hudWeaponName" class="flex-1 text-center font-semibold text-[10px] sm:text-[11px] text-[#1e293b] truncate px-1">
+              Volcano bomb
+            </div>
+            <div id="hudWeaponAmmo" class="w-[24px] sm:w-[28px] h-full border-l border-[#475569] bg-[#e2e8f0] flex items-center justify-center font-bold text-[10px] sm:text-[11px] text-[#0f172a] tabular-nums shrink-0">
+              10
+            </div>
+          </div>
+
+          <button id="btnNextWeapon" type="button" class="arrow-btn" title="Next Weapon">
+            <svg viewBox="0 0 12 12" class="w-3 h-3 fill-current"><polygon points="2,1 10,6 2,11"/></svg>
+          </button>
+        </div>
+
+        <div class="flex items-center justify-around w-full pt-0.5">
+          <div class="flex items-center gap-0.5 sm:gap-1 text-[#334155] font-bold text-[11px] sm:text-[13px]">
+            <span class="text-[#1e293b] font-black">₹</span>
+            <span id="hudMoney" class="tabular-nums">20200</span>
+          </div>
+
+          <div class="flex items-center gap-1 sm:gap-1.5">
+            <div class="flex flex-col items-center">
+              <svg viewBox="0 0 28 16" class="w-5 sm:w-6 h-3 sm:h-3.5 fill-[#0099ff]"><path d="M7 14h15a4.5 4.5 0 0 0 .7-8.95A6 6 0 0 0 11.2 3.5 5 5 0 0 0 3 7.5 4.5 4.5 0 0 0 7 14z"/></svg>
+              <div id="windArrowContainer" class="text-[9px] sm:text-[10px] leading-none font-bold text-[#1e293b] -mt-0.5">&larr;</div>
+            </div>
+            <span id="hudWind" class="font-bold text-[10px] sm:text-[11px] text-[#1e293b] tabular-nums">48</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-1.5 sm:gap-3 h-full py-1 pl-1 sm:pl-2 shrink-0">
+        <div class="hidden md:flex flex-col gap-[1px] text-[9px] font-medium text-[#1e293b]">
+          <label class="flex items-center gap-1 cursor-pointer"><input type="radio" name="quality" value="high" class="quality-radio" checked /><span>high</span></label>
+          <label class="flex items-center gap-1 cursor-pointer"><input type="radio" name="quality" value="medium" class="quality-radio" /><span>med</span></label>
+          <label class="flex items-center gap-1 cursor-pointer"><input type="radio" name="quality" value="low" class="quality-radio" /><span>low</span></label>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <button id="btnSoundToggle" type="button" class="px-1.5 py-0.5 rounded bg-white/80 border border-slate-300 text-[9px] sm:text-[10px] font-bold text-slate-700">SFX: ON</button>
+          <button id="btnNewGame" type="button" class="px-1.5 py-0.5 rounded bg-white/80 border border-slate-300 text-[9px] sm:text-[10px] font-bold text-slate-700">MENU</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- MAIN GAMEPLAY VIEWPORT -->
+    <div id="canvasContainer" class="relative flex-1 w-full h-full overflow-hidden">
+      <canvas id="gameCanvas"></canvas>
+
+      <div id="scoreboardOverlay" class="absolute top-1.5 right-4 sm:right-10 pointer-events-none z-10 flex flex-col leading-[1.12] text-[13px] sm:text-[17px] font-extrabold select-none"></div>
+
+      <div id="teleportBanner" class="hidden absolute top-2 sm:top-3 left-1/2 -translate-x-1/2 z-20 bg-sky-600/95 text-white px-3 sm:px-4 py-1 rounded-full shadow-lg text-[10px] sm:text-xs font-bold flex items-center gap-2 border border-sky-300">
+        <span>TAP ANYWHERE ON HILLS TO TELEPORT!</span>
+        <button id="btnCancelTeleport" type="button" class="underline text-sky-100">Cancel</button>
+      </div>
+
+      <div id="statusToast" class="pointer-events-none absolute top-2 sm:top-3 left-3 sm:left-4 z-10 bg-black/55 backdrop-blur-[2px] text-white px-2.5 py-1 rounded text-[11px] sm:text-xs font-semibold opacity-0 transition-opacity duration-300">
+        Player 1's Turn
+      </div>
+
+      <!-- =============================================================== -->
+      <!-- MINECRAFT-STYLE TOUCH CONTROLS (RAISED ABOVE NETLIFY BADGE ZONE) -->
+      <!-- =============================================================== -->
+      <div id="mobileTouchControls" class="absolute inset-x-0 bottom-0 pointer-events-none z-20 flex justify-between items-end px-3 sm:px-5 pb-12 sm:pb-5 select-none">
+        
+        <!-- LEFT: MINECRAFT CROSS D-PAD (3x3 Grid) -->
+        <div class="pointer-events-auto flex flex-col items-center">
+          <div class="grid grid-cols-3 gap-1">
+            <div></div>
+            <button id="mcBtnAngleUp" type="button" class="mc-pad-btn w-11 h-11" title="Cannon Up">
+              <svg viewBox="0 0 24 24" class="w-6 h-6 fill-[#1e293b] drop-shadow-[0_1px_0_rgba(255,255,255,0.8)]"><polygon points="12,4 4,18 20,18" /></svg>
+            </button>
+            <div></div>
+
+            <button id="mcBtnLeft" type="button" class="mc-pad-btn w-11 h-11" title="Move Left">
+              <svg viewBox="0 0 24 24" class="w-6 h-6 fill-[#1e293b] drop-shadow-[0_1px_0_rgba(255,255,255,0.8)]"><polygon points="4,12 18,4 18,20" /></svg>
+            </button>
+            <button id="mcBtnCenter" type="button" class="mc-pad-btn w-11 h-11" title="Shield Toggle">
+              <div class="w-4 h-4 border-[2.5px] border-[#1e293b] bg-cyan-400/50 rotate-45 shadow-xs"></div>
+            </button>
+            <button id="mcBtnRight" type="button" class="mc-pad-btn w-11 h-11" title="Move Right">
+              <svg viewBox="0 0 24 24" class="w-6 h-6 fill-[#1e293b] drop-shadow-[0_1px_0_rgba(255,255,255,0.8)]"><polygon points="20,12 6,4 6,20" /></svg>
+            </button>
+
+            <div></div>
+            <button id="mcBtnAngleDown" type="button" class="mc-pad-btn w-11 h-11" title="Cannon Down">
+              <svg viewBox="0 0 24 24" class="w-6 h-6 fill-[#1e293b] drop-shadow-[0_1px_0_rgba(255,255,255,0.8)]"><polygon points="12,20 4,6 20,6" /></svg>
+            </button>
+            <div></div>
+          </div>
+        </div>
+
+        <!-- RIGHT: MINECRAFT ACTION CLUSTER (Raised clear of bottom-right Netlify badge) -->
+        <div class="pointer-events-auto flex items-end gap-2.5 mb-3 sm:mb-0">
+          <div class="flex flex-col gap-1.5 items-end">
+            <button id="mcBtnWeapon" type="button" class="mc-pad-btn px-2.5 h-10 w-auto text-[11px] font-black flex items-center gap-1" title="Cycle Weapon">
+              <svg viewBox="0 0 20 20" class="w-4 h-4 fill-[#0f172a]"><polygon points="5,3 16,10 5,17" /></svg>
+              <span>WEAPON</span>
+            </button>
+            <div class="flex items-center gap-1.5">
+              <button id="mcBtnPowerDown" type="button" class="mc-pad-btn w-11 h-11 text-xl font-black leading-none" title="Power Down">−</button>
+              <button id="mcBtnPowerUp" type="button" class="mc-pad-btn w-11 h-11 text-xl font-black leading-none" title="Power Up">+</button>
+            </div>
+          </div>
+
+          <button id="mcBtnFire" type="button" class="mc-pad-btn mc-pad-btn-fire w-16 h-16 flex flex-col items-center justify-center gap-0.5" title="Fire Cannon!">
+            <div class="w-8 h-8 rounded border-2 border-white/90 bg-red-700 flex items-center justify-center shadow">
+              <svg viewBox="0 0 24 24" class="w-5 h-5 fill-white"><circle cx="12" cy="12" r="5" /><line x1="12" y1="2" x2="12" y2="22" stroke="white" stroke-width="2.5" /><line x1="2" y1="12" x2="22" y2="12" stroke="white" stroke-width="2.5" /></svg>
+            </div>
+            <span class="text-[10px] font-black tracking-wider text-white drop-shadow leading-none">FIRE</span>
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- WEAPONS & ITEMS SHOP MODAL -->
+    <div id="shopModal" class="hidden absolute inset-0 z-30 bg-black/60 backdrop-blur-xs flex items-center justify-center p-2 sm:p-3">
+      <div class="bg-[#eef4fc] border-2 border-[#64748b] rounded-xl max-w-lg w-full shadow-2xl overflow-hidden flex flex-col max-h-[90%]">
+        <div class="hud-gradient px-3 py-2 flex items-center justify-between border-b border-slate-300">
+          <div class="flex items-center gap-1.5">
+            <span class="font-extrabold text-xs sm:text-sm text-slate-800">ARMORY SHOP</span>
+            <span id="shopPlayerBadge" class="text-[10px] sm:text-xs font-bold px-1.5 py-0.5 rounded bg-slate-800 text-white">Player 1</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-[11px] sm:text-xs font-extrabold text-emerald-800 bg-emerald-100 border border-emerald-300 px-2 py-0.5 rounded">
+              Cash: ₹<span id="shopCashDisplay">20200</span>
+            </span>
+            <button id="btnCloseShop" type="button" class="text-slate-600 hover:text-red-600 font-extrabold text-lg leading-none px-1">&times;</button>
+          </div>
+        </div>
+
+        <div class="p-2 sm:p-3 overflow-y-auto space-y-2.5 text-xs">
+          <div>
+            <div class="font-bold text-slate-600 uppercase tracking-wider text-[10px] mb-1">Heavy Artillery &amp; Special Weapons</div>
+            <div id="shopWeaponsList" class="grid grid-cols-1 sm:grid-cols-2 gap-1.5"></div>
+          </div>
+          <div>
+            <div class="font-bold text-slate-600 uppercase tracking-wider text-[10px] mb-1">Tactical Utilities &amp; Defense</div>
+            <div id="shopItemsList" class="grid grid-cols-1 sm:grid-cols-2 gap-1.5"></div>
+          </div>
+        </div>
+
+        <div class="bg-slate-200/80 px-3 py-2 flex items-center justify-between border-t border-slate-300">
+          <span class="text-[10px] sm:text-[11px] text-slate-600">Earn cash by hitting enemy tanks!</span>
+          <button id="btnDoneShop" type="button" class="px-3 py-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded shadow">
+            Back to Battle
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ATTRACTIVE MILITARY VICTORY MEDAL PLACARD MODAL -->
+    <div id="roundOverModal" class="hidden absolute inset-0 z-30 bg-black/75 backdrop-blur-sm flex items-center justify-center p-3 select-none">
+      <div class="relative max-w-[400px] w-full rounded-[24px] p-4 sm:p-6 text-center overflow-hidden border-[3px] border-[#a3e635]/80 shadow-[0_20px_60px_rgba(0,0,0,0.85)]"
+           style="background: radial-gradient(circle at 50% 15%, #3f4f22 0%, #202b0c 60%, #111805 100%);">
+        
+        <svg viewBox="0 0 400 300" class="absolute inset-0 w-full h-full pointer-events-none opacity-25">
+          <line x1="0" y1="0" x2="400" y2="300" stroke="#bef264" stroke-width="1" stroke-dasharray="8 12" />
+          <line x1="400" y1="0" x2="0" y2="300" stroke="#bef264" stroke-width="1" stroke-dasharray="8 12" />
+          <circle cx="18" cy="18" r="4" fill="#a3e635" /><circle cx="382" cy="18" r="4" fill="#a3e635" />
+          <circle cx="18" cy="282" r="4" fill="#a3e635" /><circle cx="382" cy="282" r="4" fill="#a3e635" />
+        </svg>
+
+        <div class="relative z-10 flex justify-center -mt-1 mb-1">
+          <svg viewBox="0 0 160 88" class="w-24 sm:w-32 h-14 sm:h-18 drop-shadow-[0_4px_8px_rgba(0,0,0,0.6)]">
+            <defs>
+              <linearGradient id="goldRibbon" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#fef08a" /><stop offset="50%" stop-color="#eab308" /><stop offset="100%" stop-color="#a16207" />
+              </linearGradient>
+            </defs>
+            <path d="M48,68 C22,58 18,34 32,16 C34,26 44,38 52,44 C42,32 46,18 56,8 C60,20 66,32 72,40 C70,22 80,12 88,6 C96,12 106,22 104,40 C110,32 116,20 120,8 C130,18 134,32 124,44 C132,38 142,26 144,16 C158,34 154,58 128,68 Z"
+                  fill="url(#goldRibbon)" stroke="#713f12" stroke-width="1.5" />
+            <ellipse cx="88" cy="52" rx="28" ry="20" fill="#1e290f" stroke="url(#goldRibbon)" stroke-width="3" />
+            <polygon points="74,58 102,58 98,48 78,48" fill="#a3e635" />
+            <circle cx="88" cy="46" r="6" fill="#65a30d" />
+            <line x1="88" y1="46" x2="104" y2="40" stroke="#fff" stroke-width="2.5" stroke-linecap="round" />
+            <polygon points="88,14 91,22 99,22 92,27 95,35 88,30 81,35 84,27 77,22 85,22" fill="#facc15" stroke="#854d0e" stroke-width="0.8" />
+          </svg>
+        </div>
+
+        <div class="relative z-10 mb-1">
+          <div class="inline-block px-3 py-0.5 rounded bg-gradient-to-r from-amber-600 via-yellow-500 to-amber-600 border border-yellow-200 shadow-md">
+            <span class="text-[10px] sm:text-[11px] font-black tracking-widest text-[#241a02] uppercase" style="font-family: 'Oswald', sans-serif;">
+              ★ BATTLE REPORT ★
+            </span>
+          </div>
+        </div>
+
+        <h2 id="roundWinnerTitle" class="relative z-10 text-xl sm:text-2xl font-black uppercase tracking-wide drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] mb-2"
+            style="font-family: 'Oswald', Impact, sans-serif; color: #facc15;">
+          PLAYER 1 WINS THE ROUND!
+        </h2>
+
+        <div class="relative z-10 my-2 mx-auto max-w-[320px] bg-[#162007]/85 border-2 border-[#84cc16]/60 rounded-xl p-2 flex items-center justify-center gap-3 shadow-inner">
+          <div class="w-8 h-8 rounded-full bg-gradient-to-br from-yellow-300 via-amber-500 to-yellow-600 border-2 border-amber-900 flex items-center justify-center text-amber-950 font-black text-base shadow shrink-0">
+            ₹
+          </div>
+          <div class="text-left">
+            <div class="text-[9px] font-bold tracking-wider text-[#a3e635] uppercase">SPOILS OF WAR</div>
+            <p id="roundWinnerSub" class="text-xs sm:text-sm font-black text-white tracking-wide" style="font-family: 'Oswald', sans-serif;">
+              +₹5,000 Victory Bonus &amp; +1 Point!
+            </p>
+          </div>
+        </div>
+
+        <div class="relative z-10 flex items-center justify-center gap-2 pt-1">
+          <button id="btnRoundShop" type="button"
+                  class="flex-1 py-2 px-2.5 rounded-lg font-black text-xs uppercase tracking-wider text-amber-950 bg-gradient-to-b from-amber-300 via-amber-400 to-amber-500 border border-amber-200 shadow cursor-pointer hover:scale-105 active:scale-95"
+                  style="font-family: 'Oswald', sans-serif;">
+            🛒 ARMORY SHOP
+          </button>
+          
+          <button id="btnNextRound" type="button"
+                  class="flex-1 py-2 px-2.5 rounded-lg font-black text-xs uppercase tracking-wider text-white bg-gradient-to-b from-[#84cc16] via-[#65a30d] to-[#4d7c0f] border border-[#bef264] shadow cursor-pointer hover:scale-105 active:scale-95"
+                  style="font-family: 'Oswald', sans-serif;">
+            NEXT BATTLE ➔
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Separated JS Modules -->
+  <script src="js/config.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/physics.js"></script>
+  <script src="js/renderer.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

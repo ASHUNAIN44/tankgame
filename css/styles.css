@@ -1,0 +1,248 @@
+* {
+  box-sizing: border-box;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  height: 100dvh;
+  overflow: hidden;
+  background-color: #111317;
+  font-family: 'Inter', Arial, sans-serif;
+}
+
+#gameFrame {
+  width: 100%;
+  height: 100%;
+  height: 100dvh;
+}
+
+@media (min-width: 640px) and (min-height: 600px) {
+  #gameFrame {
+    height: 100%;
+    max-height: 760px;
+  }
+}
+
+/* =========================================================
+   MOBILE LANDSCAPE COMPACT SCALING
+   ========================================================= */
+@media screen and (max-height: 500px) and (orientation: landscape) {
+  #startMenuContainer {
+    padding: 6px 12px !important;
+  }
+  #startMenuContainer svg.w-\[180px\] {
+    width: 140px !important;
+  }
+  #menuScreen1, #menuScreen2 {
+    flex-direction: row !important;
+    gap: 10px !important;
+    transform: scale(0.88);
+    transform-origin: center center;
+  }
+}
+
+/* =========================================================
+   MINECRAFT-STYLE BEVELED TOUCH BUTTONS (WITH !IMPORTANT)
+   ========================================================= */
+button.mc-pad-btn {
+  background-color: rgba(226, 232, 240, 0.72) !important;
+  backdrop-filter: blur(3px) !important;
+  -webkit-backdrop-filter: blur(3px) !important;
+  border-top: 3px solid rgba(255, 255, 255, 0.95) !important;
+  border-left: 3px solid rgba(255, 255, 255, 0.95) !important;
+  border-right: 3px solid rgba(30, 41, 59, 0.8) !important;
+  border-bottom: 3px solid rgba(15, 23, 42, 0.9) !important;
+  border-radius: 6px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.45), inset 0 0 0 1px rgba(255, 255, 255, 0.4) !important;
+  color: #0f172a !important;
+  touch-action: none !important;
+  cursor: pointer !important;
+  transition: transform 0.05s ease, background-color 0.05s ease !important;
+}
+
+button.mc-pad-btn:active {
+  background-color: rgba(148, 163, 184, 0.88) !important;
+  border-top: 3px solid rgba(15, 23, 42, 0.85) !important;
+  border-left: 3px solid rgba(15, 23, 42, 0.85) !important;
+  border-right: 3px solid rgba(255, 255, 255, 0.9) !important;
+  border-bottom: 3px solid rgba(255, 255, 255, 0.9) !important;
+  transform: translateY(2px) !important;
+}
+
+button.mc-pad-btn.mc-pad-btn-fire {
+  background-color: rgba(239, 68, 68, 0.78) !important;
+  border-top: 3px solid rgba(254, 226, 226, 0.95) !important;
+  border-left: 3px solid rgba(254, 226, 226, 0.95) !important;
+  border-right: 3px solid rgba(127, 29, 29, 0.9) !important;
+  border-bottom: 3px solid rgba(69, 10, 10, 0.95) !important;
+  color: #ffffff !important;
+}
+
+button.mc-pad-btn.mc-pad-btn-fire:active {
+  background-color: rgba(185, 28, 28, 0.92) !important;
+}
+
+/* =========================================================
+   RADIO CIRCLES, SWATCHES & HUD STYLES
+   ========================================================= */
+.classic-radio-circle.active::after {
+  content: "";
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #4ade80, #14532d);
+  display: block;
+}
+
+.color-swatch-btn {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1.8px solid #1e293b;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.1s ease;
+}
+
+.color-swatch-btn:hover {
+  transform: scale(1.12);
+}
+
+.color-swatch-btn.active::after {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #22c55e, #052e16);
+  border: 1px solid rgba(255,255,255,0.85);
+  display: block;
+}
+
+.ai-diff-circle.active::after {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #365314;
+  display: block;
+}
+
+.retro-score {
+  font-family: 'Oswald', 'Impact', 'Arial Black', sans-serif;
+  letter-spacing: 0.5px;
+  text-shadow: 1px 1px 0px rgba(255,255,255,0.35);
+}
+
+.hud-gradient {
+  background: linear-gradient(180deg, #eef4fc 0%, #dce7f7 48%, #cddcf2 100%);
+  border-bottom: 2px solid #9ab0ce;
+  box-shadow: inset 0 1px 0 #ffffff;
+}
+
+.hud-divider {
+  border-right: 1px solid #b8cbe4;
+  box-shadow: 1px 0 0 #f4f8fd;
+}
+
+.arrow-btn {
+  width: 18px;
+  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #222;
+  transition: transform 0.08s ease, color 0.1s ease;
+}
+
+.arrow-btn:hover {
+  color: #d90000;
+  transform: scale(1.15);
+}
+
+.arrow-btn:active {
+  transform: scale(0.92);
+}
+
+.fire-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.08s ease, filter 0.1s ease;
+}
+
+.fire-btn:hover {
+  filter: brightness(1.1);
+  transform: scale(1.05);
+}
+
+.fire-btn:active {
+  transform: scale(0.94);
+}
+
+.item-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 1px 3px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+
+.item-btn:hover {
+  background: rgba(59, 130, 246, 0.15);
+}
+
+.item-btn.active-item {
+  background: rgba(6, 182, 212, 0.28);
+  outline: 1px solid #0891b2;
+}
+
+.quality-radio {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 12px;
+  height: 12px;
+  border: 1.5px solid #334155;
+  border-radius: 50%;
+  background: #fff;
+  display: inline-grid;
+  place-content: center;
+  cursor: pointer;
+  margin: 0;
+}
+
+.quality-radio::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  transform: scale(0);
+  transition: 100ms transform ease-in-out;
+  background: radial-gradient(circle at 35% 35%, #4ade80, #15803d);
+}
+
+.quality-radio:checked::before {
+  transform: scale(1);
+}
+
+canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+}
