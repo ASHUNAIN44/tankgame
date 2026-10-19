@@ -9,7 +9,25 @@
   <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="style.css" />
   <style>
-    /* Ultra-transparent Minecraft Beveled Touch Buttons (Tanks remain 100% visible behind them) */
+    /* Fullscreen on PC & Mobile */
+    #gameFrame {
+      width: 100vw !important;
+      height: 100vh !important;
+      height: 100dvh !important;
+      max-width: none !important;
+      max-height: none !important;
+      border-radius: 0 !important;
+      border: none !important;
+    }
+
+    /* Hide Mobile Touch Buttons on PC / Desktop (Mouse & Keyboard devices) */
+    @media (hover: hover) and (pointer: fine) {
+      #mobileTouchControls {
+        display: none !important;
+      }
+    }
+
+    /* Ultra-transparent Minecraft Beveled Touch Buttons for Mobile */
     button.mc-pad-btn {
       background-color: rgba(255, 255, 255, 0.20) !important;
       backdrop-filter: blur(1px) !important;
@@ -44,7 +62,7 @@
     }
   </style>
 </head>
-<body class="fixed inset-0 flex items-center justify-center w-full h-full bg-[#111317] p-0 overflow-hidden select-none">
+<body class="fixed inset-0 w-screen h-screen bg-[#111317] m-0 p-0 overflow-hidden select-none">
 
   <!-- PORTRAIT ORIENTATION ROTATE SCREEN PROMPT (FOR MOBILE) -->
   <div id="rotateDeviceOverlay" class="fixed inset-0 z-50 bg-[#161d0d]/95 text-white flex-col items-center justify-center p-6 text-center select-none hidden">
@@ -73,8 +91,8 @@
     </div>
   </div>
 
-  <!-- Outer Rounded Classic Game Frame -->
-  <div id="gameFrame" class="relative w-full h-full max-w-[1100px] sm:max-h-[760px] bg-[#d0e2fa] sm:rounded-[20px] overflow-hidden shadow-2xl border-0 sm:border-2 border-[#141619] flex flex-col">
+  <!-- Full-Screen Game Frame (100% Width & Height on PC and Mobile) -->
+  <div id="gameFrame" class="relative w-screen h-screen bg-[#d0e2fa] overflow-hidden flex flex-col">
 
     <!-- ========================================== -->
     <!-- CLASSIC STARTING & PLAYER SELECTION SCREENS -->
@@ -386,9 +404,6 @@
             <div>PGUP &amp; PGDN: <span class="text-[#2f3b1c]">FIRE POWER</span></div>
             <div>"Q" &amp; "W": <span class="text-[#2f3b1c]">CHANGE WEAPON</span></div>
             <div>SPACE: <span class="text-[#2f3b1c]">FIRE</span></div>
-            <div class="text-[10px] text-emerald-800 font-extrabold pt-0.5">
-              📱 MOBILE: SEE-THROUGH D-PAD &amp; TOUCH BUTTONS!
-            </div>
           </div>
         </div>
       </div>
@@ -626,7 +641,7 @@
       </div>
 
       <!-- =============================================================== -->
-      <!-- COMPACT SEE-THROUGH TOUCH CONTROLS TUCKED IN BOTTOM CORNERS     -->
+      <!-- MOBILE-ONLY SEE-THROUGH TOUCH CONTROLS (HIDDEN ON PC DESKTOP)   -->
       <!-- =============================================================== -->
       <div id="mobileTouchControls" class="absolute inset-x-0 bottom-0 pointer-events-none z-20 flex justify-between items-end px-2 sm:px-4 pb-2 sm:pb-3 select-none">
         
